@@ -1,0 +1,183 @@
+---
+# Roundcube version to install.
+roundcube_version: 1.0.1
+
+# URL of the Roundcube package to install.
+roundcube_pkg_url: "http://downloads.sourceforge.net/project/roundcubemail/roundcubemail/{{ roundcube_version }}/roundcubemail-{{ roundcube_version }}.tar.gz"
+
+# List of PHP modules that should be installed.
+roundcube_php_modules: [fileinfo, filter, iconv, json, dom, mcrypt, openssl, pcre, PDO, pdo_pgsql, session, sockets, xml]
+
+# Name of this Roundcube instance.
+roundcube_name: roundcube
+
+# User to create that will run the Roundcube instance.
+roundcube_user: roundcube
+
+# Group to create that will run the Roundcube instance.
+roundcube_group: "{{ roundcube_user }}"
+
+#
+# Paths
+#
+
+# Whether to run Roundcube in chroot jail.
+roundcube_chroot_enabled: true
+
+# The base directory for Roundcube. If chroot is enabled, then this will be
+# also the chroot directory.
+roundcube_base_dir: "/opt/{{ roundcube_name }}"
+
+# Path of the document root, i.e. where Roundcube files will be installed.
+# If chroot is enabled then it MUST be inside the chroot directory (but specify
+# full path here).
+roundcube_www_dir: "{{ roundcube_base_dir }}/www"
+
+# Path of the directory where to store config files.
+# When chroot is enabled and this path is out of the chroot, then the runscript
+# will be configured to copy configs to {{roundcube_www_dir}}/config on start.
+roundcube_conf_dir: "/etc/{{ roundcube_name }}"
+
+# Path of the directory to store logs.
+# If chroot is enabled then it MUST be inside the chroot directory (but specify
+# full path here).
+# Default is /var/log/roundcube, or {{roundcube_base_dir}}/log on chroot env.
+roundcube_logs_dir: "{{ roundcube_base_dir + '/log' if roundcube_chroot_enabled else '/var/log/roundcube' }}"
+
+# Path of the directory to place temporary files.
+# If chroot is enabled then it MUST be inside the chroot directory (but specify
+# full path here).
+roundcube_temp_dir: "{{ roundcube_base_dir }}/tmp"
+
+# Ansible temporary path where to download and unpack installation package.
+temp_path: /tmp/ansible
+
+#
+# Roundcube system/UI
+#
+
+# Name your service. This is displayed on the login screen and in the window title.
+roundcube_product_name: Roundcube Webmail
+
+# Session lifetime in minutes.
+roundcube_session_lifetime: 60
+
+# Mimetypes supported by the browser; attachments of these types will open in
+# a preview window.
+roundcube_client_mimetypes:
+  - text/plain
+  - text/html
+  - image/jpeg
+  - image/gif
+  - image/png
+  - application/pdf
+
+# List of active plugins (in plugins/ directory).
+roundcube_plugins:
+  - archive
+  - zipdownload
+
+# The default locale setting (leave empty for auto-detection).
+roundcube_default_locale:
+
+# Maximal size of an attachement that can be uploaded (in megabytes).
+roundcube_upload_max_size: 16
+
+#
+# Database
+#
+
+# Domain or IP address of PostgreSQL instance.
+roundcube_db_host: localhost
+
+# Port number of PostgreSQL instance.
+roundcube_db_port: 5432
+
+# Name of the Roundcube database.
+roundcube_db_database: roundcube
+
+# Name of the Roundcube database user.
+roundcube_db_username: roundcube
+
+# Password of the Roundcube database user.
+roundcube_db_password: changeme
+
+# Should not be changed.
+roundcube_db_delegate_to: "{{ mailsrv_dspam_db_host | replace('localhost', inventory_hostname) | replace('127.0.0.1', inventory_hostname) }}"
+
+#
+# Mail server
+#
+
+# Host/domain of the IMAP server.
+# To use SSL/TLS connection, enter hostname with prefix ssl:// or tls://.
+roundcube_imap_host: ssl://localhost
+
+# Port of the IMAP server.
+roundcube_imap_port: 993
+
+# Host/domain of the SMTP server for sending e-mails.
+# To use SSL/TLS connection, enter hostname with prefix ssl:// or tls://.
+roundcube_smtp_host: localhost
+
+# Port of the SMTP server for sending e-mails.
+roundcube_smtp_port: 25
+
+# Whether SMTP server requires authentication.
+roundcube_smtp_auth_enabled: false
+
+#
+# Web server
+#
+
+# Domain name on which this Roundcube instance will be accessible.
+roundcube_domain:
+
+# Path of the TLS/SSL certificate for the domain.
+roundcube_ssl_cert:
+
+# Path of the TLS/SSL private key.
+roundcube_ssl_key:
+
+#
+# PHP-FPM pool
+#
+
+# Hash of process manager parameters.
+#
+#  mode   Process manager mode. Choose how the process manager will control
+#         the number of child processes. Possible values are:
+#         : static   - a fixed number of child processes.
+#         : dynamic  - the number of child processes are set dynamically.
+#         : ondemand - no children are created at startup; children will be
+#                      forked when new requests will connect. [default]
+# All modes:
+#    max_children        The number of child processes to be created when mode
+#                        is 'static', or the maximum number of processes when
+#                        mode is 'dynamic' or 'ondemand'. This value sets the
+#                        limit on the number of simultaneous requests that will
+#                        be served. Default is 10.
+# Dynamic mode:
+#    start_servers       The number of children processes created on startup.
+#                        Set to '-1' to adjust this parameter based on:
+#                        min_spare_servers + (max_spare_servers - min_spare_servers) / 2
+#    min_spare_servers   The desired minimum number of children processes in
+#                        'idle' state. If less than this number, then some
+#                        children will be created. Default is 1.
+#    max_spare_servers   The desired maximum number of children processes in
+#                        'idle' state. If greater than this number, then some
+#                        children will be killed. Default is 6.
+# On-demand mode:
+#    process_idle_timeout   The number of seconds after which an idle process
+#                           will be killed.
+php_fpm_pm: {}
+
+# FPM log level
+# Allowed values: alert, error, warning, notice, debug
+php_fpm_log_level: warning
+
+# Path and permissions of the FastCGI socket
+php_fpm_socket:
+  path: "/run/{{ roundcube_name }}/fastcgi.sock"
+  group: nginx
+  mode: '0660'

@@ -1,0 +1,28 @@
+---
+- name: create database user
+  delegate_to: "{{ roundcube_db_delegate_to }}"
+  sudo_user: postgres
+  postgresql_user: >
+    name={{ roundcube_db_username }}
+    password="{{ roundcube_db_password }}"
+  tags: accounts
+
+- name: create database
+  delegate_to: "{{ roundcube_db_delegate_to }}"
+  sudo_user: postgres
+  postgresql_db: >
+    name={{ roundcube_db_database }}
+    owner={{ roundcube_db_username }}
+  register: createdb_result
+
+- name: initialize database
+  shell: >
+    PGPASSWORD='{{ roundcube_db_password }}'
+    psql -h {{ roundcube_db_host }}
+    -p {{ roundcube_db_port }}
+    -U {{ roundcube_db_username }}
+    -d {{ roundcube_db_database }}
+    -f {{ roundcube_www_dir }}/SQL/postgres.initial.sql
+    --set ON_ERROR_STOP=1
+  notify: restart roundcube
+  when: createdb_result | changed

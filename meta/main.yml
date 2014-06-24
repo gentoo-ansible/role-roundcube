@@ -1,0 +1,15 @@
+---
+galaxy_info:
+  author: Jakub Jirutka
+  company: CTU in Prague
+  description: A role to install and configure Roundcube.
+  license: MIT
+  min_ansible_version: 1.8
+  platforms:
+    - name: Gentoo
+  categories:
+    - web
+
+dependencies:
+  - role: php-fpm
+  - role: nginx

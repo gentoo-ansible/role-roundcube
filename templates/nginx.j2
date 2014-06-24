@@ -1,0 +1,70 @@
+# {{ ansible_managed }}
+
+server {
+	listen		[::]:443 ssl;
+	server_name	{{ roundcube_domain }};
+
+	root		{{ roundcube_www_dir }};
+
+	access_log	/var/log/nginx/{{ roundcube_name }}.access.log main;
+	error_log	/var/log/nginx/{{ roundcube_name }}.error.log warn;
+
+	client_max_body_size {{ roundcube_upload_max_size }}M;
+
+{% if roundcube_ssl_cert %}
+	ssl_certificate		{{ roundcube_ssl_cert }};
+	ssl_certificate_key	{{ roundcube_ssl_key }};
+
+{% endif %}
+	# Enable HSTS Policy
+	add_header Strict-Transport-Security "max-age=315360000";
+
+	index index.php index.html;
+
+	# Common HTTP headers for proxy
+	include incl/proxy_headers.conf;
+
+	# Favicon
+	include incl/handle_favicon.conf;
+
+	location ~ ^/(bin|config|SQL)/ {
+		deny all;
+	}
+
+	location = /robots.txt {
+		allow all;
+		log_not_found off;
+		access_log off;
+	}
+
+	location ~ [^/]\.php(/|$) {
+		fastcgi_split_path_info ^(.+\.php)(.*)$;
+		
+		if (!-f $document_root$fastcgi_script_name) {
+			return 404;
+		}
+{% if php_fpm_port is defined %}
+		fastcgi_pass		127.0.0.1:{{ php_fpm_port }};
+{% else %}
+		fastcgi_pass		unix:{{ php_fpm_socket.path }};
+{% endif %}
+		fastcgi_keep_conn	on;
+		fastcgi_index 		index.php;
+		
+		include				incl/fastcgi_params.conf;
+{% if roundcube_chroot_enabled %}
+{% set _www_dir = '/' + roundcube_www_dir | relpath(php_fpm_chroot) %}
+
+		# Ajust paths for chroot jail.
+		fastcgi_param		DOCUMENT_ROOT	{{ _www_dir }};
+		fastcgi_param		SCRIPT_FILENAME {{ _www_dir }}/$fastcgi_script_name;
+{% endif %}
+	}
+}
+
+server {
+	listen			[::]:80;
+	server_name		{{ roundcube_domain }};
+
+	rewrite			^ https://$server_name$request_uri? permanent;
+}

@@ -1,0 +1,46 @@
+---
+- name: install config.inc.php
+  template: >
+    src=config.inc.php.j2
+    dest={{ roundcube_conf_dir }}/config.inc.php
+    owner=root group=root mode=0644
+  notify: restart roundcube
+
+- name: generate random session key
+  shell: >
+    openssl rand -base64 34 | head -c 24 > {{ roundcube_conf_dir }}/session_key
+    creates={{ roundcube_conf_dir }}/session_key
+  notify: restart roundcube
+
+- name: configure php-fpm pool
+  template: >
+    src=../../php-fpm/templates/pool.ini.j2
+    dest=/etc/php/fpm/pools/{{ roundcube_name }}.ini
+    owner=root group=root mode=0644
+  notify: restart roundcube
+  tags: fpm
+
+- name: link configs to www/config
+  file: >
+    state=link
+    src={{ roundcube_conf_dir }}/{{ item }}
+    dest={{ roundcube_www_dir }}/config/{{ item }}
+    force=yes
+  with_items:
+    - config.inc.php
+    - session_key
+  when: not roundcube_chroot_enabled and roundcube_conf_dir != roundcube_www_dir + '/config'
+
+- name: configure runscript
+  template: >
+    src=runscript.conf.j2
+    dest=/etc/conf.d/{{ roundcube_name }}
+    owner=root group=root mode=0644
+
+- name: configure nginx site
+  template: >
+    src=nginx.j2
+    dest=/etc/nginx/sites/{{ roundcube_name }}.conf
+    owner=root group=root mode=0644
+  notify: reload nginx
+  tags: nginx

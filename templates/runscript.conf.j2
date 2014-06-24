@@ -1,0 +1,5 @@
+# {{ ansible_managed }}
+{% if roundcube_chroot_enabled and not roundcube_conf_dir.startswith(roundcube_base_dir) %}
+
+chroot_copy="{{ roundcube_conf_dir }}/*:/{{ roundcube_www_dir | relpath(roundcube_base_dir) }}/config/"
+{% endif %}

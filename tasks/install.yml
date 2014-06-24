@@ -1,0 +1,46 @@
+---
+- name: prepare temp directory
+  file: >
+    state=directory
+    path={{ temp_path }}
+
+- name: download package to temp
+  get_url: >
+    url={{ roundcube_pkg_url }}
+    dest=/tmp/ansible/{{ roundcube_pkg_url | basename }}
+
+- name: unpack package in temp
+  unarchive: >
+    copy=no
+    src={{ temp_path }}/{{ roundcube_pkg_url | basename }}
+    dest={{ temp_path }}
+
+- name: remove useless files and directories
+  file: >
+    state=absent
+    path={{ temp_path }}/{{ roundcube_pkg_url | basename | replace('.tar.gz', '') }}/{{ item }}
+  with_items:
+    - .htaccess
+    - composer.json-dist
+    - README.md
+    - installer
+    - logs
+    - temp
+    - config/config.inc.php.sample
+  tags: cleanup
+
+- name: copy files to place
+  shell: >
+    cp -r {{ temp_path }}/{{ roundcube_pkg_url | basename | replace('.tar.gz', '') }}/* {{ roundcube_www_dir }}/
+
+- name: create .version file
+  copy: >
+    content={{ roundcube_version }}
+    dest={{ roundcube_base_dir }}/.version
+    owner=root group=root mode=0644
+
+- name: remove temporary files
+  file: >
+    state=absent
+    path={{ temp_path }}
+  tags: cleanup

@@ -1,0 +1,168 @@
+<?php
+
+$config = array();
+
+// ----------------------------------
+// SQL DATABASE
+// ----------------------------------
+
+// Database connection string (DSN) for read+write operations
+// Format (compatible with PEAR MDB2): db_provider://user:password@host/database
+// Currently supported db_providers: mysql, pgsql, sqlite, mssql or sqlsrv
+// For examples see http://pear.php.net/manual/en/package.database.mdb2.intro-dsn.php
+// NOTE: for SQLite use absolute path: 'sqlite:////full/path/to/sqlite.db?mode=0646'
+$config['db_dsnw'] = 'pgsql://{{ roundcube_db_username }}:{{ roundcube_db_password }}@{{ roundcube_db_host }}/{{ roundcube_db_database }}';
+
+
+// ----------------------------------
+// IMAP
+// ----------------------------------
+
+// The mail host chosen to perform the log-in.
+// Leave blank to show a textbox at login, give a list of hosts
+// to display a pulldown menu or set one host as string.
+// To use SSL/TLS connection, enter hostname with prefix ssl:// or tls://
+// Supported replacement variables:
+// %n - hostname ($_SERVER['SERVER_NAME'])
+// %t - hostname without the first part
+// %d - domain (http hostname $_SERVER['HTTP_HOST'] without the first part)
+// %s - domain name after the '@' from e-mail address provided at login screen
+// For example %n = mail.domain.tld, %t = domain.tld
+$config['default_host'] = '{{ roundcube_imap_host }}';
+
+// TCP port used for IMAP connections
+$config['default_port'] = {{ roundcube_imap_port }};
+
+// IMAP connection timeout, in seconds. Default: 0 (use default_socket_timeout)
+$config['imap_timeout'] = 5;
+
+
+// ----------------------------------
+// SMTP
+// ----------------------------------
+
+// SMTP server host (for sending mails).
+// To use SSL/TLS connection, enter hostname with prefix ssl:// or tls://
+// If left blank, the PHP mail() function is used
+// Supported replacement variables:
+// %h - user's IMAP hostname
+// %n - hostname ($_SERVER['SERVER_NAME'])
+// %t - hostname without the first part
+// %d - domain (http hostname $_SERVER['HTTP_HOST'] without the first part)
+// %z - IMAP domain (IMAP hostname without the first part)
+// For example %n = mail.domain.tld, %t = domain.tld
+$config['smtp_server'] = '{{ roundcube_smtp_host }}';
+
+// SMTP port (default is 25; use 587 for STARTTLS or 465 for the
+// deprecated SSL over SMTP (aka SMTPS))
+$config['smtp_port'] = {{ roundcube_smtp_port }};
+
+{% if roundcube_smtp_auth_enabled | bool %}
+// SMTP username (if required) if you use %u as the username Roundcube
+// will use the current username for login
+$config['smtp_user'] = '%u';
+
+// SMTP password (if required) if you use %p as the password Roundcube
+// will use the current user's password for login
+$config['smtp_pass'] = '%p';
+
+{% endif %}
+
+// ----------------------------------
+// SYSTEM
+// ----------------------------------
+
+// provide an URL where a user can get support for this Roundcube installation
+// PLEASE DO NOT LINK TO THE ROUNDCUBE.NET WEBSITE HERE!
+$config['support_url'] = '';
+
+// use this folder to store log files (must be writeable for nginx user)
+// This is used by the 'file' log driver.
+$config['log_dir'] = '/{{ roundcube_logs_dir | relpath(php_fpm_chroot) }}';
+
+// use this folder to store temp files (must be writeable for nginx user)
+$config['temp_dir'] = '/{{ roundcube_temp_dir | relpath(php_fpm_chroot) }}';
+
+// Allow browser-autocompletion on login form.
+// 0 - disabled, 1 - username and host only, 2 - username, host, password
+$config['login_autocomplete'] = 1;
+
+// Session lifetime in minutes
+$config['session_lifetime'] = {{ roundcube_session_lifetime }};
+
+// Session domain: .example.org
+$config['session_domain'] = '{{ roundcube_domain }}';
+
+// this key is used to encrypt the users imap password which is stored
+// in the session record (and the client cookie if remember password is enabled).
+// please provide a string of exactly 24 chars.
+// YOUR KEY MUST BE DIFFERENT THAN THE SAMPLE VALUE FOR SECURITY REASONS
+$config['des_key'] = trim(file(RCMAIL_CONFIG_DIR . '/session_key')[0]);
+
+// Password charset.
+// Use it if your authentication backend doesn't support UTF-8.
+// Defaults to ISO-8859-1 for backward compatibility
+$config['password_charset'] = 'UTF-8';
+
+// Name your service. This is displayed on the login screen and in the window title
+$config['product_name'] = '{{ roundcube_product_name }}';
+
+// Mimetypes supported by the browser.
+// attachments of these types will open in a preview window
+// either a comma-separated list or an array: 'text/plain,text/html,text/xml,image/jpeg,image/gif,image/png,application/pdf'
+$config['client_mimetypes'] = '{{ roundcube_client_mimetypes | join(",") }}';
+
+// maximum size of uploaded contact photos in pixel
+$config['contact_photo_size'] = 640;
+
+// List of active plugins (in plugins/ directory)
+$config['plugins'] = array('{{ roundcube_plugins | join("\', \'") }}');
+
+
+// ----------------------------------
+// USER INTERFACE
+// ----------------------------------
+
+// the default locale setting (leave empty for auto-detection)
+// RFC1766 formatted language name like en_US, de_DE, de_CH, fr_FR, pt_BR
+$config['language'] = {{ "'%s'"|format(roundcube_default_locale) | default('null') }};
+
+// Make use of the built-in spell checker. It is based on GoogieSpell.
+// Since Google only accepts connections over https your PHP installatation
+// requires to be compiled with Open SSL support
+$config['enable_spellcheck'] = false;
+
+// Enables files upload indicator. Requires APC installed and enabled apc.rfc1867 option.
+// By default refresh time is set to 1 second. You can set this value to true
+// or any integer value indicating number of seconds.
+$config['upload_progress'] = true;
+
+
+// ----------------------------------
+// USER PREFERENCES
+// ----------------------------------
+
+// Use this charset as fallback for message decoding
+$config['default_charset'] = 'UTF-8';
+
+// display remote inline images
+// 0 - Never, always ask
+// 1 - Ask if sender is not in address book
+// 2 - Always show inline images
+$config['show_images'] = 1;
+
+// save compose message every 300 seconds (5min)
+$config['draft_autosave'] = 30;
+
+// Mark as read when viewed in preview pane (delay in seconds)
+// Set to -1 if messages in preview pane should not be marked as read
+$config['preview_pane_mark_read'] = 1;
+
+// When replying:
+// -1 - don't cite the original message
+// 0  - place cursor below the original message
+// 1  - place cursor above original message (top posting)
+$config['reply_mode'] = 1;
+
+// Sets default mode of Forward feature to "forward as attachment"
+$config['forward_attachment'] = true;

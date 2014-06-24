@@ -1,0 +1,30 @@
+---
+- include: prepare.yml tags=install,prepare
+
+- name: check installed version
+  shell: >
+    cat {{ roundcube_base_dir }}/.version || echo ''
+  changed_when: false
+  register: installed_version
+  tags: install
+
+- include: install.yml tags=install,deploy
+  when: installed_version.stdout != roundcube_version
+
+- include: configure.yml tags=config
+
+- include: database.yml tags=database
+
+- name: link runscript for php-fpm pool
+  file: >
+    state=link
+    src=/etc/init.d/php-fpm
+    dest=/etc/init.d/{{ roundcube_name }}
+  tags: fpm
+
+- name: enable and start roundcube
+  service: >
+    name={{ roundcube_name }}
+    enabled=yes
+    state=started
+  tags: [services, fpm]

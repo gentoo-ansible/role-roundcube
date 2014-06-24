@@ -3,14 +3,19 @@
   template: >
     src=config.inc.php.j2
     dest={{ roundcube_conf_dir }}/config.inc.php
-    owner=root group=root mode=0644
+    owner=root group={{ roundcube_group }} mode=0640
   notify: restart roundcube
 
-- name: generate random session key
+- name: generate random session_key
   shell: >
     openssl rand -base64 34 | head -c 24 > {{ roundcube_conf_dir }}/session_key
     creates={{ roundcube_conf_dir }}/session_key
   notify: restart roundcube
+
+- name: ensure rights of session_key file
+  file: >
+    path={{ roundcube_conf_dir }}/session_key
+    owner=root group={{ roundcube_group }} mode=0640
 
 - name: configure php-fpm pool
   template: >

@@ -39,7 +39,7 @@ server {
 
 	location ~ [^/]\.php(/|$) {
 		fastcgi_split_path_info ^(.+\.php)(.*)$;
-		
+
 		if (!-f $document_root$fastcgi_script_name) {
 			return 404;
 		}
@@ -50,7 +50,7 @@ server {
 {% endif %}
 		fastcgi_keep_conn	on;
 		fastcgi_index 		index.php;
-		
+
 		include				incl/fastcgi_params.conf;
 {% if roundcube_chroot_enabled %}
 {% set _www_dir = '/' + roundcube_www_dir | relpath(php_fpm_chroot) %}

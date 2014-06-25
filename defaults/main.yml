@@ -78,6 +78,8 @@ roundcube_client_mimetypes:
 # supported.
 roundcube_plugins:
   - archive
+  - managesieve
+  - markasjunk
   - zipdownload
 
 # The default locale setting (leave empty for auto-detection).
@@ -85,6 +87,21 @@ roundcube_default_locale:
 
 # Maximal size of an attachement that can be uploaded (in megabytes).
 roundcube_upload_max_size: 16
+
+#
+# Plugins
+#
+
+# Port number of the managesieve server.
+roundcube_managesieve_port: 4190
+
+# Host of the managesieve server.
+# Replacement variables supported in host name:
+#   %h - user's IMAP hostname
+#   %n - http hostname ($_SERVER['SERVER_NAME'])
+#   %d - domain (http hostname without the first part)
+#   For example %n = mail.domain.tld, %d = domain.tld
+roundcube_managesieve_host: localhost
 
 #
 # Database

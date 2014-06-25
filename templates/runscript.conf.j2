@@ -1,5 +1,14 @@
 # {{ ansible_managed }}
 {% if roundcube_chroot_enabled and not roundcube_conf_dir.startswith(roundcube_base_dir) %}
+{% set _www_dir = '/' + roundcube_www_dir | relpath(roundcube_base_dir) %}
 
-chroot_copy="{{ roundcube_conf_dir }}/*:/{{ roundcube_www_dir | relpath(roundcube_base_dir) }}/config/"
+chroot_copy="
+	{{ roundcube_conf_dir }}/config.inc.php:{{ _www_dir }}/config/
+	{{ roundcube_conf_dir }}/session_key:{{ _www_dir }}/config/"
+
+for path in {{ roundcube_conf_dir }}/plugins/*.inc.php; do
+	filename=$(basename "$path")
+	chroot_copy+=" ${path}:{{ _www_dir }}/plugins/${filename%*.inc.php}/config.inc.php"
+done
+
 {% endif %}

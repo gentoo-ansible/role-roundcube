@@ -40,6 +40,7 @@
     - { path: "{{ roundcube_base_dir }}", owner: root, group: root }
     - { path: "{{ roundcube_www_dir }}",  owner: root, group: root }
     - { path: "{{ roundcube_conf_dir }}", owner: root, group: root }
+    - { path: "{{ roundcube_conf_dir }}/plugins", owner: root, group: root }
     - { path: "{{ roundcube_temp_dir }}", mode: '0750' }
     - { path: "{{ roundcube_logs_dir }}" }
 

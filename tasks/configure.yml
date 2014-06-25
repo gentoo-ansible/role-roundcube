@@ -1,5 +1,5 @@
 ---
-- name: install config.inc.php
+- name: install roundcube config
   template: >
     src=config.inc.php.j2
     dest={{ roundcube_conf_dir }}/config.inc.php
@@ -17,15 +17,7 @@
     path={{ roundcube_conf_dir }}/session_key
     owner=root group={{ roundcube_group }} mode=0640
 
-- name: configure php-fpm pool
-  template: >
-    src=../../php-fpm/templates/pool.ini.j2
-    dest=/etc/php/fpm/pools/{{ roundcube_name }}.ini
-    owner=root group=root mode=0644
-  notify: restart roundcube
-  tags: fpm
-
-- name: link configs to www/config
+- name: link roundcube configs
   file: >
     state=link
     src={{ roundcube_conf_dir }}/{{ item }}
@@ -35,6 +27,33 @@
     - config.inc.php
     - session_key
   when: not roundcube_chroot_enabled and roundcube_conf_dir != roundcube_www_dir + '/config'
+
+- name: install plugins configs
+  template: >
+    src={{ item }}
+    dest={{ roundcube_conf_dir }}/plugins/{{ item | basename | replace('.j2', '') }}
+    owner=root group={{ roundcube_group }} mode=0640
+  with_fileglob:
+    - ../templates/plugins/*.inc.php.j2
+  notify: restart roundcube
+
+- name: link plugins configs
+  file: >
+    state=link
+    src={{ roundcube_conf_dir }}/plugins/{{ item | basename | replace('.j2', '') }}
+    dest={{ roundcube_www_dir }}/plugins/{{ item | basename | replace('.inc.php.j2', '') }}/config.inc.php
+    force=yes
+  with_fileglob:
+    - ../templates/plugins/*.inc.php.j2
+  when: not roundcube_chroot_enabled
+
+- name: configure php-fpm pool
+  template: >
+    src=../../php-fpm/templates/pool.ini.j2
+    dest=/etc/php/fpm/pools/{{ roundcube_name }}.ini
+    owner=root group=root mode=0644
+  notify: restart roundcube
+  tags: fpm
 
 - name: configure runscript
   template: >

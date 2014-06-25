@@ -163,39 +163,6 @@ roundcube_ssl_key:
 # PHP-FPM pool
 #
 
-# Hash of process manager parameters.
-#
-#  mode   Process manager mode. Choose how the process manager will control
-#         the number of child processes. Possible values are:
-#         : static   - a fixed number of child processes.
-#         : dynamic  - the number of child processes are set dynamically.
-#         : ondemand - no children are created at startup; children will be
-#                      forked when new requests will connect. [default]
-# All modes:
-#    max_children        The number of child processes to be created when mode
-#                        is 'static', or the maximum number of processes when
-#                        mode is 'dynamic' or 'ondemand'. This value sets the
-#                        limit on the number of simultaneous requests that will
-#                        be served. Default is 10.
-# Dynamic mode:
-#    start_servers       The number of children processes created on startup.
-#                        Set to '-1' to adjust this parameter based on:
-#                        min_spare_servers + (max_spare_servers - min_spare_servers) / 2
-#    min_spare_servers   The desired minimum number of children processes in
-#                        'idle' state. If less than this number, then some
-#                        children will be created. Default is 1.
-#    max_spare_servers   The desired maximum number of children processes in
-#                        'idle' state. If greater than this number, then some
-#                        children will be killed. Default is 6.
-# On-demand mode:
-#    process_idle_timeout   The number of seconds after which an idle process
-#                           will be killed.
-php_fpm_pm: {}
-
-# FPM log level
-# Allowed values: alert, error, warning, notice, debug
-php_fpm_log_level: warning
-
 # Path and permissions of the FastCGI socket
 php_fpm_socket:
   path: "/run/{{ roundcube_name }}/fastcgi.sock"

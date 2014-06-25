@@ -11,5 +11,14 @@ galaxy_info:
     - web
 
 dependencies:
-  - role: php-fpm
   - role: nginx
+  - role: php-fpm-pool
+    php_fpm_pool_name: "{{ roundcube_name }}"
+    php_fpm_user: "{{ roundcube_user }}"
+    php_fpm_group: "{{ roundcube_group }}"
+    php_fpm_logs_dir: "{{ roundcube_logs_dir }}"
+    php_fpm_temp_dir: "{{ roundcube_temp_dir }}"
+    php_fpm_upload_max_size: "{{ roundcube_upload_max_size }}"
+    php_fpm_memory_limit: 25
+    php_fpm_ini_overrides:
+      mbstring.func_overload: false

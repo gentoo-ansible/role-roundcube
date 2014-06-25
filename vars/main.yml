@@ -1,25 +1,5 @@
 ---
-# Name of the php-fom pool for this Roundcube instance.
-php_fpm_pool_name: "{{ roundcube_name }}"
-
-# User to run php-fpm worker processes.
-php_fpm_user: "{{ roundcube_user }}"
-
-# Path of the chroot jail, or '/' to not use chroot.
-php_fpm_chroot: "{{ roundcube_base_dir if roundcube_chroot_enabled | bool else '/' }}"
-
-# Path of the directory to store logs.
-php_fpm_logs_dir: "{{ roundcube_logs_dir }}"
-
-# Override some php.ini settings.
-php_fpm_ini_overrides:
-  upload_tmp_dir: "/{{ roundcube_temp_dir | relpath(php_fpm_chroot) }}"
-  session.save_path: "/{{ roundcube_temp_dir | relpath(php_fpm_chroot) }}"
-  upload_max_filesize: "{{ roundcube_upload_max_size }}M"
-  post_max_size: "{{ roundcube_upload_max_size }}M"
-  memory_limit: "{{ roundcube_upload_max_size if roundcube_upload_max_size > 25 else 25 }}M"
-  file_uploads: true
-  mbstring.func_overload: false
+php_fpm_chroot_dir: "{{ roundcube_base_dir if roundcube_chroot_enabled | bool else '/' }}"
 
 # List of external plugins.
 _plugins_external: "{{ roundcube_plugins | select('mapping') | selectattr('url', 'defined') | list }}"

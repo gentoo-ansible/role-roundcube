@@ -13,22 +13,6 @@
   when: roundcube_php_modules | difference(php_modules.stdout_lines)
   tags: check
 
-- name: "create group {{ roundcube_group }}"
-  group: >
-    name={{ roundcube_group }}
-    system=yes
-  tags: accounts
-
-- name: "create user {{ roundcube_user }}"
-  user: >
-    name={{ roundcube_user }}
-    group={{ roundcube_group }}
-    system=yes
-    shell=/sbin/nologin
-    home={{ roundcube_base_dir }}
-    createhome=no
-  tags: accounts
-
 - name: prepare directories
   file: >
     state=directory

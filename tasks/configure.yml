@@ -47,14 +47,6 @@
     - ../templates/plugins/*.inc.php.j2
   when: not roundcube_chroot_enabled
 
-- name: configure php-fpm pool
-  template: >
-    src=../../php-fpm/templates/pool.ini.j2
-    dest=/etc/php/fpm/pools/{{ roundcube_name }}.ini
-    owner=root group=root mode=0644
-  notify: restart roundcube
-  tags: fpm
-
 - name: configure runscript
   template: >
     src=runscript.conf.j2

@@ -43,7 +43,7 @@ server {
 		if (!-f $document_root$fastcgi_script_name) {
 			return 404;
 		}
-{% if php_fpm_port is defined %}
+{% if php_fpm_port is defined and php_fpm_port > 0 %}
 		fastcgi_pass		127.0.0.1:{{ php_fpm_port }};
 {% else %}
 		fastcgi_pass		unix:{{ php_fpm_socket.path }};
@@ -53,7 +53,7 @@ server {
 
 		include				incl/fastcgi_params.conf;
 {% if roundcube_chroot_enabled %}
-{% set _www_dir = '/' + roundcube_www_dir | relpath(php_fpm_chroot) %}
+{% set _www_dir = '/' + roundcube_www_dir | relpath(php_fpm_chroot_dir) %}
 
 		# Ajust paths for chroot jail.
 		fastcgi_param		DOCUMENT_ROOT	{{ _www_dir }};

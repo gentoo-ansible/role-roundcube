@@ -79,10 +79,10 @@ $config['support_url'] = '';
 
 // use this folder to store log files (must be writeable for nginx user)
 // This is used by the 'file' log driver.
-$config['log_dir'] = '/{{ roundcube_logs_dir | relpath(php_fpm_chroot) }}';
+$config['log_dir'] = '/{{ roundcube_logs_dir | relpath(php_fpm_chroot_dir) }}';
 
 // use this folder to store temp files (must be writeable for nginx user)
-$config['temp_dir'] = '/{{ roundcube_temp_dir | relpath(php_fpm_chroot) }}';
+$config['temp_dir'] = '/{{ roundcube_temp_dir | relpath(php_fpm_chroot_dir) }}';
 
 // Allow browser-autocompletion on login form.
 // 0 - disabled, 1 - username and host only, 2 - username, host, password

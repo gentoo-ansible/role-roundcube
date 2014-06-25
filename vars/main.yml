@@ -20,3 +20,9 @@ php_fpm_ini_overrides:
   memory_limit: "{{ roundcube_upload_max_size if roundcube_upload_max_size > 25 else 25 }}M"
   file_uploads: true
   mbstring.func_overload: false
+
+# List of external plugins.
+_plugins_external: "{{ roundcube_plugins | select('mapping') | selectattr('url', 'defined') | list }}"
+
+# List of all plugin names.
+_plugins_names: "{{ roundcube_plugins | select('mapping') | map(attribute='name') | union( roundcube_plugins | select('string') ) | list }}"

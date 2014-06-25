@@ -72,7 +72,10 @@ roundcube_client_mimetypes:
   - image/png
   - application/pdf
 
-# List of active plugins (in plugins/ directory).
+# List of active built-in or external plugins. The item might be string for
+# built-in plugin, or hash with 'name', 'version' and 'url' for an external
+# plugin to download. Currently only tar.gz packages for external plugins are
+# supported.
 roundcube_plugins:
   - archive
   - zipdownload

@@ -11,6 +11,8 @@
 - include: install.yml tags=install,deploy
   when: installed_version.stdout != roundcube_version
 
+- include: plugins.yml tags=install,plugins
+
 - include: configure.yml tags=config
 
 - include: database.yml tags=database

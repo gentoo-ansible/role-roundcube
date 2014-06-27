@@ -53,7 +53,7 @@ server {
 
 		include				incl/fastcgi_params.conf;
 {% if roundcube_chroot_enabled %}
-{% set _www_dir = '/' + roundcube_www_dir | relpath(php_fpm_chroot_dir) %}
+{% set _www_dir = '/' + roundcube_www_dir | relpath(_prefix) %}
 
 		# Ajust paths for chroot jail.
 		fastcgi_param		DOCUMENT_ROOT	{{ _www_dir }};

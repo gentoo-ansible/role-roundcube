@@ -1,8 +1,8 @@
 ---
-php_fpm_chroot_dir: "{{ roundcube_base_dir if roundcube_chroot_enabled | bool else '/' }}"
-
 # List of external plugins.
 _plugins_external: "{{ roundcube_plugins | select('mapping') | selectattr('url', 'defined') | list }}"
 
 # List of all plugin names.
 _plugins_names: "{{ roundcube_plugins | select('mapping') | map(attribute='name') | union( roundcube_plugins | select('string') ) | list }}"
+
+_prefix: "{{ roundcube_base_dir if roundcube_chroot_enabled | bool else '/' }}"

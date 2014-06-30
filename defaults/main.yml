@@ -77,10 +77,10 @@ roundcube_client_mimetypes:
 # plugin to download. Currently only tar.gz packages for external plugins are
 # supported.
 roundcube_plugins:
-  - archive
-  - managesieve
-  - markasjunk
-  - zipdownload
+  - { name: archive }
+  - { name: managesieve }
+  - { name: markasjunk }
+  - { name: zipdownload }
 
 # The default locale setting (leave empty for auto-detection).
 roundcube_default_locale:

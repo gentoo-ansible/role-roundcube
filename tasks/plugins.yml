@@ -4,7 +4,7 @@
     cat {{ roundcube_www_dir }}/plugins/{{ item.name }}/.version || echo ''
   changed_when: false
   register: _installed_versions
-  with_items: _plugins_external
+  with_items: roundcube_plugins | selectattr('url', 'defined') | list
 
 - name: download and extract external plugins in tar.gz
   shell: >
@@ -14,5 +14,5 @@
     chdir={{ roundcube_www_dir }}/plugins
   when: item.0.version != item.1.stdout
   with_together:
-    - _plugins_external
+    - roundcube_plugins | selectattr('url', 'defined') | list
     - _installed_versions.results

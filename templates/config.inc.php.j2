@@ -117,7 +117,7 @@ $config['client_mimetypes'] = '{{ roundcube_client_mimetypes | join(",") }}';
 $config['contact_photo_size'] = 640;
 
 // List of active plugins (in plugins/ directory)
-$config['plugins'] = array('{{ _plugins_names | join("\', \'") }}');
+$config['plugins'] = array('{{ roundcube_plugins | map(attribute="name") | join("\', \'") }}');
 
 
 // ----------------------------------

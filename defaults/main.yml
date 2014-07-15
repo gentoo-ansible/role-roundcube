@@ -49,9 +49,6 @@ roundcube_logs_dir: "{{ roundcube_base_dir + '/log' if roundcube_chroot_enabled 
 # full path here).
 roundcube_temp_dir: "{{ roundcube_base_dir }}/tmp"
 
-# Ansible temporary path where to download and unpack installation package.
-temp_path: /tmp/ansible
-
 #
 # Roundcube system/UI
 #

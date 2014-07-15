@@ -1,8 +1,7 @@
 ---
-- name: prepare temp directory
-  file: >
-    state=directory
-    path={{ temp_path }}
+- name: create temp directory
+  action: mktemp_dir
+  register: _temp
 
 - name: download package to temp
   get_url: >
@@ -12,13 +11,13 @@
 - name: unpack package in temp
   unarchive: >
     copy=no
-    src={{ temp_path }}/{{ roundcube_pkg_url | basename }}
-    dest={{ temp_path }}
+    src={{ _temp.path }}/{{ roundcube_pkg_url | basename }}
+    dest={{ _temp.path }}
 
 - name: remove useless files and directories
   file: >
     state=absent
-    path={{ temp_path }}/{{ roundcube_pkg_url | basename | replace('.tar.gz', '') }}/{{ item }}
+    path={{ _temp.path }}/{{ roundcube_pkg_url | basename | replace('.tar.gz', '') }}/{{ item }}
   with_items:
     - .htaccess
     - composer.json-dist
@@ -31,7 +30,7 @@
 
 - name: copy files to place
   shell: >
-    cp -r {{ temp_path }}/{{ roundcube_pkg_url | basename | replace('.tar.gz', '') }}/* {{ roundcube_www_dir }}/
+    cp -r {{ _temp.path }}/{{ roundcube_pkg_url | basename | replace('.tar.gz', '') }}/* {{ roundcube_www_dir }}/
 
 - name: create .version file
   copy: >
@@ -39,8 +38,8 @@
     dest={{ roundcube_base_dir }}/.version
     owner=root group=root mode=0644
 
-- name: remove temporary files
+- name: delete temp directory
   file: >
     state=absent
-    path={{ temp_path }}
+    path={{ _temp.path }}
   tags: cleanup

@@ -85,6 +85,19 @@ roundcube_default_locale:
 # Maximal size of an attachement that can be uploaded (in megabytes).
 roundcube_upload_max_size: 16
 
+# Hash of host-specific configs for a multi-domain setup.
+#
+# Example:
+#   roundcube_host_config:
+#     example.org:
+#       product_name: 'Example Mail'
+#       username_domain: 'example.org'
+#     elpmaxe.org:
+#       product_name: 'Liam Elpmaxe'
+#
+# See http://trac.roundcube.net/wiki/Howto_Config/Multidomains.
+roundcube_host_config: {}
+
 #
 # Plugins
 #

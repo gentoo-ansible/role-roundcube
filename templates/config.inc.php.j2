@@ -3,6 +3,12 @@
 
 $config = array();
 
+// If enabled, Roundcube will additionally load the file that matches the host
+// name used to access Roundcube and merged the options configured there over
+// the main config file.
+$config['include_host_config'] = {{ 'true' if roundcube_host_config else 'false' }};
+
+
 // ----------------------------------
 // SQL DATABASE
 // ----------------------------------

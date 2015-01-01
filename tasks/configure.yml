@@ -28,6 +28,14 @@
     - session_key
   when: not roundcube_chroot_enabled and roundcube_conf_dir != roundcube_www_dir + '/config'
 
+- name: install host-specific configs
+  copy: >
+    content="<?php\n{% for k, v in item.value.items() %}$config['{{ k }}'] = '{{ v }}';\n{% endfor %}"
+    dest={{ roundcube_conf_dir }}/{{ item.key }}.inc.php
+    owner=root group={{ roundcube_group }} mode=0640
+  with_dict: roundcube_host_config
+  notify: restart roundcube
+
 - name: install plugins configs
   template: >
     src={{ item }}
@@ -52,6 +60,7 @@
     src=runscript.conf.j2
     dest=/etc/conf.d/{{ roundcube_name }}
     owner=root group=root mode=0644
+  notify: restart roundcube
 
 - name: configure nginx site
   template: >

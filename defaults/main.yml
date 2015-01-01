@@ -160,6 +160,9 @@ roundcube_smtp_auth_enabled: false
 # Web server
 #
 
+# Whether to setup nginx as a reverse proxy for Roundcube.
+roundcube_nginx_enabled: true
+
 # Domain name on which this Roundcube instance will be accessible.
 roundcube_domain:
 

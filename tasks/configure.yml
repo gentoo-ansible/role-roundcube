@@ -68,4 +68,5 @@
     dest=/etc/nginx/sites/{{ roundcube_name }}.conf
     owner=root group=root mode=0644
   notify: reload nginx
+  when: roundcube_nginx_enabled | bool
   tags: nginx

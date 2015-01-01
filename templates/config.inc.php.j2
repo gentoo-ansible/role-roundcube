@@ -98,7 +98,7 @@ $config['login_autocomplete'] = 1;
 $config['session_lifetime'] = {{ roundcube_session_lifetime }};
 
 // Session domain: .example.org
-$config['session_domain'] = '{{ roundcube_domain }}';
+$config['session_domain'] = '{{ roundcube_domain | default('', true) }}';
 
 // this key is used to encrypt the users imap password which is stored
 // in the session record (and the client cookie if remember password is enabled).

@@ -6,7 +6,7 @@
 - name: download package to temp
   get_url: >
     url={{ roundcube_pkg_url }}
-    dest=/tmp/ansible/{{ roundcube_pkg_url | basename }}
+    dest={{ _temp.path }}/{{ roundcube_pkg_url | basename }}
 
 - name: unpack package in temp
   unarchive: >

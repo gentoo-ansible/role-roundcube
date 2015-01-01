@@ -85,6 +85,19 @@ roundcube_default_locale:
 # Maximal size of an attachement that can be uploaded (in megabytes).
 roundcube_upload_max_size: 16
 
+# The domain name to automatically add to user names for login (only when user
+# omits the domain part). Usable only for IMAP servers that require full e-mail
+# addresses for login.
+#
+# Supported replacement variables:
+#   %h - user's IMAP hostname
+#   %n - hostname ($_SERVER['SERVER_NAME'])
+#   %t - hostname without the first part
+#   %d - domain (http hostname $_SERVER['HTTP_HOST'] without the first part)
+#   %z - IMAP domain (IMAP hostname without the first part)
+# For example %n = mail.domain.tld, %t = domain.tld
+roundcube_username_domain: '%d'
+
 # Hash of host-specific configs for a multi-domain setup.
 #
 # Example:

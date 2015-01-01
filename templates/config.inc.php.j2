@@ -106,6 +106,22 @@ $config['session_domain'] = '{{ roundcube_domain | default('', true) }}';
 // YOUR KEY MUST BE DIFFERENT THAN THE SAMPLE VALUE FOR SECURITY REASONS
 $config['des_key'] = trim(file(RCMAIL_CONFIG_DIR . '/session_key')[0]);
 
+// Automatically add this domain to user names for login
+// Only for IMAP servers that require full e-mail addresses for login
+// Specify an array with 'host' => 'domain' values to support multiple hosts
+// Supported replacement variables:
+// %h - user's IMAP hostname
+// %n - hostname ($_SERVER['SERVER_NAME'])
+// %t - hostname without the first part
+// %d - domain (http hostname $_SERVER['HTTP_HOST'] without the first part)
+// %z - IMAP domain (IMAP hostname without the first part)
+// For example %n = mail.domain.tld, %t = domain.tld
+$config['username_domain'] = '{{ roundcube_username_domain | default('', true) }}';
+
+// Force domain configured in username_domain to be used for login.
+// Any domain in username will be replaced by username_domain.
+$config['username_domain_forced'] = false;
+
 // Password charset.
 // Use it if your authentication backend doesn't support UTF-8.
 // Defaults to ISO-8859-1 for backward compatibility

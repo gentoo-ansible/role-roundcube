@@ -15,4 +15,4 @@
   when: item.0.version != item.1.stdout
   with_together:
     - roundcube_plugins | selectattr('url', 'defined') | list
-    - _installed_versions.results
+    - _installed_versions.results | default([])

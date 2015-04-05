@@ -1,6 +1,6 @@
 ---
 # Roundcube version to install.
-roundcube_version: 1.0.4
+roundcube_version: 1.0.5
 
 # URL of the Roundcube package to install.
 roundcube_pkg_url: "http://downloads.sourceforge.net/project/roundcubemail/roundcubemail/{{ roundcube_version }}/roundcubemail-{{ roundcube_version }}.tar.gz"

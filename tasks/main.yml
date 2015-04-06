@@ -34,5 +34,5 @@
 - name: "ensure that https://{{ roundcube_domain }} returns HTTP 200"
   sudo: no
   local_action: uri url=https://{{ roundcube_domain }} status_code=200 timeout=10
-  when: roundcube_domain
+  when: roundcube_domain is defined
   tags: check

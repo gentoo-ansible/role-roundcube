@@ -24,3 +24,4 @@ dependencies:
     php_fpm_memory_limit: 25
     php_fpm_ini_overrides:
       mbstring.func_overload: false
+    php_fpm_disable_functions: [exec,passthru,shell_exec,system,proc_open,popen,curl_exec,curl_multi_exec,parse_ini_file,show_source]
